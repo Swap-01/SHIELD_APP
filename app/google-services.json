@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "869955108320",
+    "project_id": "shield-3400c",
+    "storage_bucket": "shield-3400c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:869955108320:android:e73d5e17034c22251cbf85",
+        "android_client_info": {
+          "package_name": "com.daluiamit.shield"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "869955108320-qg1b8vm3sf6ima7dl5n9p3in8alb686j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.daluiamit.shield",
+            "certificate_hash": "e7adf772e3f6dbcc6f0ac9caddf83c3941b05441"
+          }
+        },
+        {
+          "client_id": "869955108320-rd9jb738f9mu23bjja56cb0l7reidapc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwe1gH3Ca7LgTGBpTfXDjYfZbyN3chFZM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "869955108320-rd9jb738f9mu23bjja56cb0l7reidapc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
