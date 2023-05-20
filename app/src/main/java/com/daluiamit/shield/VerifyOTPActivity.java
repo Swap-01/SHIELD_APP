@@ -3,10 +3,13 @@ package com.daluiamit.shield;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +25,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static com.daluiamit.shield.AppConfigUtils.CURRENT_LOGGED_IN_USER_KEY;
+import static com.daluiamit.shield.AppConfigUtils.USER_LOGIN_STATE_KEY;
+import static com.daluiamit.shield.AppConfigUtils.USER_LOGIN_STATE_STORAGE_FILE_NAME;
 
 public class VerifyOTPActivity extends AppCompatActivity {
     private EditText inputCode1, inputCode2, inputCode3, inputCode4, inputCode5, inputCode6;
@@ -31,6 +39,22 @@ public class VerifyOTPActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final SharedPreferences sharedPreferences = getSharedPreferences(USER_LOGIN_STATE_STORAGE_FILE_NAME, Context.MODE_PRIVATE);
+
+        final boolean isLoggedIn = sharedPreferences.getBoolean(USER_LOGIN_STATE_KEY, false);
+        final String currentUser = sharedPreferences.getString(CURRENT_LOGGED_IN_USER_KEY, null);
+
+        // Checking whether any user already logged in or not
+        if (Objects.nonNull(currentUser) && isLoggedIn) {
+            Log.d(currentUser, "The user is already logged in, redirecting to Main Activity page");
+
+            Intent intent=new Intent(VerifyOTPActivity.this, MainActivity.class);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            return;
+        }
+
         setContentView(R.layout.activity_verify_otpactivity);
         TextView textMobile=findViewById(R.id.textMobile);
         textMobile.setText(String.format(
@@ -69,7 +93,7 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                 inputCode5.getText().toString()+
                                 inputCode6.getText().toString();
 
-                if(verificationId!=null){
+                if (verificationId != null) {
                     progressBar.setVisibility(View.VISIBLE);
                     buttonVerify.setVisibility(View.INVISIBLE);
                     PhoneAuthCredential phoneAuthCredential= PhoneAuthProvider.getCredential(verificationId,code);
@@ -80,6 +104,18 @@ public class VerifyOTPActivity extends AppCompatActivity {
                                     progressBar.setVisibility(View.VISIBLE);
                                     buttonVerify.setVisibility(View.INVISIBLE);
                                     if(task.isSuccessful()){
+                                        // After verifying, we need keep the user state as logged in into the system
+                                        final String loggedInUser = getIntent().getStringExtra("mobile");
+
+                                        final SharedPreferences sharedPreferences = getSharedPreferences(USER_LOGIN_STATE_STORAGE_FILE_NAME, Context.MODE_PRIVATE);
+
+                                        final SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                        editor.putString(CURRENT_LOGGED_IN_USER_KEY, loggedInUser);
+                                        editor.putBoolean(USER_LOGIN_STATE_KEY, true);
+
+                                        editor.apply();
+
                                         Intent intent=new Intent(VerifyOTPActivity.this,MainActivity.class);
                                         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                         startActivity(intent);
